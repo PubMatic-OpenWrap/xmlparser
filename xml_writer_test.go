@@ -96,7 +96,7 @@ func Test_XMLElement(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			buf := &bytes.Buffer{}
 			node := tt.setup()
-			node.Write(buf)
+			node.Write(buf, &WriteSettings{})
 			assert.Equal(t, tt.want, buf.String())
 		})
 	}
@@ -142,7 +142,7 @@ func Test_XMLTextElement(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			buf := &bytes.Buffer{}
 			node := tt.setup()
-			node.Write(buf)
+			node.Write(buf, &WriteSettings{})
 			assert.Equal(t, tt.want, buf.String())
 		})
 	}
@@ -166,7 +166,7 @@ func Test_XMLTextFunc(t *testing.T) {
 			setup: func() XMLWriter {
 				return NewXmlTextFunc(
 					false,
-					func(w Writer, args ...any) {
+					func(w Writer, _ *WriteSettings, args ...any) {
 						w.WriteString(args[0].(string))
 					},
 					"text")
@@ -178,10 +178,10 @@ func Test_XMLTextFunc(t *testing.T) {
 			setup: func() XMLWriter {
 				return NewXmlTextFunc(
 					false,
-					func(w Writer, args ...any) {
+					func(w Writer, ws *WriteSettings, args ...any) {
 						w.WriteString(args[0].(string))
 						w.WriteByte(':')
-						args[1].(XMLWriter).Write(w)
+						args[1].(XMLWriter).Write(w, ws)
 					},
 					"text", NewXMLText("new_text", false, NoEscaping))
 			},
@@ -193,7 +193,7 @@ func Test_XMLTextFunc(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			buf := &bytes.Buffer{}
 			node := tt.setup()
-			node.Write(buf)
+			node.Write(buf, &WriteSettings{})
 			assert.Equal(t, tt.want, buf.String())
 		})
 	}

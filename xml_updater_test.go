@@ -1096,7 +1096,7 @@ func TestXMLUpdater_ApplyXMLSettingsOperations(t *testing.T) {
 			xu := NewXMLUpdater(reader, WriteSettings{})
 			tt.args.setup(xu, reader)
 
-			xu.ApplyXMLSettingsOperations()
+			xu.applyXMLSettings()
 
 			//rebuild buffer
 			out := bytes.Buffer{}

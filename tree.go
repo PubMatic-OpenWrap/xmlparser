@@ -21,6 +21,10 @@ func (n treeNode[T]) Index() int {
 	return n.index
 }
 
+func (n treeNode[T]) IsLeaf() bool {
+	return n.first == -1
+}
+
 type tree[T any] struct {
 	nodes []treeNode[T] //first node will be always last node
 	match compare[T]
@@ -54,10 +58,6 @@ func (t *tree[T]) insert(parent *treeNode[T], n treeNode[T]) {
 
 func (t *tree[T]) reset() {
 	t.nodes = t.nodes[:0]
-}
-
-func (t *tree[T]) isLeaf(node *treeNode[T]) bool {
-	return node != nil && t.nodes[node.index].first == -1
 }
 
 func (t *tree[T]) getChild(parent *treeNode[T], child string) (result *treeNode[T]) {
@@ -169,6 +169,21 @@ func (t *tree[T]) iterate(f func(*treeNode[T])) {
 	for i := range t.nodes {
 		f(&t.nodes[i])
 	}
+}
+
+func (t *tree[T]) _traverse(index int, f func(*treeNode[T])) {
+	f(&t.nodes[index])
+	for i := t.nodes[index].first; i != -1; i = t.nodes[i].next {
+		t._traverse(i, f)
+	}
+}
+
+func (t *tree[T]) traverse(node *treeNode[T], f func(*treeNode[T])) {
+	parent := 0
+	if node != nil {
+		parent = node.index
+	}
+	t._traverse(parent, f)
 }
 
 /* Printing Function */

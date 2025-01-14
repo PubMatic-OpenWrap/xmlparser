@@ -64,6 +64,10 @@ func NewXMLToken(ssi, sei, esi, eei int) XMLToken {
 	}
 }
 
+func (t *XMLToken) XMLTag(in []byte) []byte {
+	return in[t.start.si:t.end.ei]
+}
+
 func (t *XMLToken) Text(in []byte) []byte {
 	if t.start.si == t.end.si {
 		return nil //inline tag doesn't have text
